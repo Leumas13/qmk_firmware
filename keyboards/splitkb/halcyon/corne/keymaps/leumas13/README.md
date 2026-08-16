@@ -23,7 +23,8 @@ RGB is split by LED type:
   `LED_FLAG_UNDERGLOW` LED with the selected OS color.
 - `rgb_handlers.c`: per-key RGB layer patterns. It mirrors the keymap with
   `LAYOUT_split_3x6_3`, so each color entry is in the same physical position as
-  the keycode in `keymap.c`.
+  the keycode in `keymap.c`. It also keeps separate, split-synced brightness
+  values for the key matrix and underglow.
 
 The underglow color follows the selected OS:
 
@@ -33,6 +34,26 @@ The underglow color follows the selected OS:
 
 Use `OS_SWITCH` to rotate between modes or `OS_WIN_MODE`, `OS_MAC_MODE`, and
 `OS_LINUX_MODE` to select one directly.
+
+On `_CFG`, use `RGB_BRI_UP` / `RGB_BRI_DN` for the per-key matrix brightness
+and `UGL_BRI_UP` / `UGL_BRI_DN` for underglow brightness.
+
+## Keyboard Lock
+
+The keyboard starts locked and locks again after `KEYBOARD_IDLE_LOCK_TIMEOUT`
+milliseconds without key activity. While locked, key events are swallowed before
+OS handlers, RGB controls, and macros run. Type `KEYBOARD_UNLOCK_PASSWORD` to
+unlock it; the default is `yo`.
+
+Use `KB_LOCK` on `_CFG` to lock manually. This protects against accidentally
+triggering sensitive macros while away from the keyboard, but secrets compiled
+into firmware are still present in the firmware binary.
+
+## Sensitive Text Macro
+
+Set `VM_TEXT` and `HOST_TEXT` in `config.h` to the plain text emitted by
+`M_VM` and `M_HOST`. Both macros are placed on `_FUN` at the two rightmost keys
+of the first two rows and only run after the keyboard has been unlocked.
 
 ## OS-specific actions
 

@@ -1,6 +1,15 @@
 #include "shared.h"
 
+#ifdef SPLIT_KEYBOARD
+#    include "transactions.h"
+#endif
+
 static uint8_t current_os_mode = OS_WIN;
+
+#ifdef SPLIT_KEYBOARD
+static bool     os_mode_sync_dirty = true;
+static uint32_t os_mode_sync_timer = 0;
+#endif
 
 typedef struct {
     uint16_t win;
@@ -27,6 +36,13 @@ static void apply_os_mod_mapping(void) {
     keymap_config.swap_rctl_rgui = mac_mode;
 }
 
+static void apply_os_mode(uint8_t mode) {
+    if (mode <= OS_LINUX) {
+        current_os_mode = mode;
+        apply_os_mod_mapping();
+    }
+}
+
 static uint16_t get_os_keycode(uint16_t keycode) {
     if (keycode < OS_UNDO || keycode > OS_END) {
         return KC_NO;
@@ -47,8 +63,11 @@ static uint16_t get_os_keycode(uint16_t keycode) {
 
 void set_os_mode(uint8_t mode) {
     if (mode <= OS_LINUX) {
-        current_os_mode = mode;
-        apply_os_mod_mapping();
+        apply_os_mode(mode);
+
+#ifdef SPLIT_KEYBOARD
+        os_mode_sync_dirty = true;
+#endif
     }
 }
 
@@ -82,3 +101,40 @@ bool process_record_os(uint16_t keycode, keyrecord_t *record) {
 
     return true;
 }
+
+#ifdef SPLIT_KEYBOARD
+static void os_mode_sync_slave_handler(uint8_t in_buflen, const void *in_data, uint8_t out_buflen, void *out_data) {
+    (void)out_buflen;
+    (void)out_data;
+
+    if (in_buflen != sizeof(current_os_mode)) {
+        return;
+    }
+
+    apply_os_mode(*(const uint8_t *)in_data);
+}
+
+void init_os_sync(void) {
+    transaction_register_rpc(OS_MODE_SYNC, os_mode_sync_slave_handler);
+    os_mode_sync_dirty = true;
+}
+
+void sync_os_mode_task(void) {
+    if (!is_keyboard_master() || timer_elapsed32(os_mode_sync_timer) < 50) {
+        return;
+    }
+
+    if (!os_mode_sync_dirty && timer_elapsed32(os_mode_sync_timer) < 1000) {
+        return;
+    }
+
+    os_mode_sync_timer = timer_read32();
+
+    if (transaction_rpc_send(OS_MODE_SYNC, sizeof(current_os_mode), &current_os_mode)) {
+        os_mode_sync_dirty = false;
+    }
+}
+#else
+void init_os_sync(void) {}
+void sync_os_mode_task(void) {}
+#endif

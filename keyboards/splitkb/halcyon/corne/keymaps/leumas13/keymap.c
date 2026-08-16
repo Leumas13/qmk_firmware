@@ -2,6 +2,7 @@
 #include "shared.h"
 
 #include "keydefs.c"
+#include "security_handlers.c"
 #include "os_handlers.c"
 #include "macro_handlers.c"
 #include "tap_dance.c"
@@ -19,7 +20,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_NUM] = LAYOUT_split_3x6_3(
-        M_PAREN,        XXXX,          KC_F5,          KC_F6,          KC_F8,           KC_PSCR,        XXXX,           KC_7,           KC_8,           KC_9,           KC_DEL,         KC_BSPC,
+        MIN_MV,        XXXX,          KC_F5,          KC_F6,          KC_F8,           KC_PSCR,        XXXX,           KC_7,           KC_8,           KC_9,           KC_DEL,         KC_BSPC,
         ____,           ____,           ____,           ____,           ____,           ____,           KC_PPLS,        KC_4,           KC_5,           KC_6,           XXXX,           XXXX,
         ____,           XXXX,           ____,           ____,           ____,           ____,           KC_PMNS,        KC_1,           KC_2,           KC_3,           KC_PSLS,        XXXX,
                                                         ____,           ____,           ____,           ____,           KC_0,           KC_RALT
@@ -33,16 +34,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_CFG] = LAYOUT_split_3x6_3(
-        XXXX,       OS_WIN_MODE,    OS_MAC_MODE,  OS_LINUX_MODE,           XXXX,        XXXX,           XXXX,           KC_MPLY,        KC_MPRV,        KC_MNXT,        XXXX,           XXXX,
-        XXXX,           RM_TOGG,        RM_HUEU,        RM_SATU,        RM_VALU,        XXXX,           XXXX,           KC_MUTE,        KC_VOLD,        KC_VOLU,        XXXX,           XXXX,
-        XXXX,           RM_NEXT,        RM_HUED,        RM_SATD,        RM_VALD,        XXXX,           XXXX,           XXXX,           KC_BRID,        KC_BRIU,        XXXX,           XXXX,
-                                                        XXXX,           XXXX,           XXXX,           QK_BOOT,        XXXX,           XXXX
+        XXXX,       OS_WIN_MODE,    OS_MAC_MODE,  OS_LINUX_MODE,      KB_LOCK,           XXXX,              XXXX,           KC_MPLY,        KC_MPRV,        KC_MNXT,        XXXX,           XXXX,
+        XXXX,           RM_TOGG,           XXXX,     UGL_BRI_UP,   RGB_BRI_UP,           XXXX,              XXXX,           KC_MUTE,        KC_VOLD,        KC_VOLU,        XXXX,           XXXX,
+        XXXX,           XXXX,              XXXX,     UGL_BRI_DN,   RGB_BRI_DN,           XXXX,              XXXX,           XXXX,           KC_BRID,        KC_BRIU,        XXXX,           XXXX,
+                                                        XXXX,            XXXX,           XXXX,           QK_BOOT,        XXXX,           XXXX
     ),
 
     [_NAV] = LAYOUT_split_3x6_3(
         MO(_MOUSE),     OS_UNDO,        OS_CUT,         OS_COPY,        OS_PASTE,       OS_REDO,        KC_PGUP,        OS_HOME,        KC_UP,          OS_END,         KC_DEL,         KC_BSPC,
         ____,           ____,           ____,           ____,           ____,           KC_CALC,        KC_PGDN,        KC_LEFT,        KC_DOWN,        KC_RGHT,        XXXX,           KC_PSCR,
-        ____,           XXXX,           XXXX,           XXXX,           XXXX,           KC_MYCM,        XXXX,           OS_WORD_LEFT,   XXXX,           OS_WORD_RIGHT,  XXXX,           KC_CAPS,
+        ____,           XXXX,           XXXX,           XXXX,           XXXX,           KC_MYCM,        XXXX,           OS_WORD_LEFT,   XXXX,           OS_WORD_RIGHT,  CW_TOGG,           KC_CAPS,
                                                         ____,           ____,           ____,           ____,           ____,           KC_LALT
     ),
 
@@ -54,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_FUN] = LAYOUT_split_3x6_3(
-        ____,           ____,           KC_F7,          KC_F8,          KC_F9,          KC_F12,         XXXX,           ____,           M_PAREN,        ____,           XXXX,           XXXX,
+        ____,           ____,           KC_F7,          KC_F8,          KC_F9,          KC_F12,         XXXX,           ____,           M_PAREN,        ____,           M_VM,         M_HOST,
         ____,           ____,           KC_F4,          KC_F5,          KC_F6,          KC_F11,         ____,           ____,           M_BRACK,        ____,           XXXX,           XXXX,
         ____,           ____,           KC_F1,          KC_F2,          KC_F3,          KC_F10,         ____,           ____,           M_CURLY,        ____,           XXXX,           XXXX,
                                                         ____,           ____,           ____,           ____,           ____,           ____
@@ -68,11 +69,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
+#ifdef CHORDAL_HOLD
+const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT_split_3x6_3(
+    'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R',
+    'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R',
+    'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R',
+                        'L', 'L', 'L', 'R', 'R', 'R'
+);
+#endif
+
 void keyboard_post_init_user(void) {
+    init_security_sync();
+    init_os_sync();
+    init_rgb_sync();
     set_os_mode(OS_WIN);
 }
 
+void housekeeping_task_user(void) {
+    security_task();
+    sync_os_mode_task();
+    sync_rgb_state_task();
+}
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LCTL_T(KC_ESC):
+            return TAPPING_TERM + 40;
+
+        case LGUI_T(KC_A):
+        case LALT_T(KC_S):
+        case LCTL_T(KC_D):
+        case LSFT_T(KC_F):
+        case RSFT_T(KC_J):
+        case RCTL_T(KC_K):
+        case RALT_T(KC_L):
+        case RGUI_T(KC_SCLN):
+            return TAPPING_TERM + 25;
+
+        default:
+            return TAPPING_TERM;
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_security(keycode, record)) {
+        return false;
+    }
+
     if (!process_record_os(keycode, record)) {
         return false;
     }
@@ -80,6 +123,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_macros(keycode, record)) {
         return false;
     }
+
+#ifdef RGB_MATRIX_ENABLE
+    if (!process_record_rgb(keycode, record)) {
+        return false;
+    }
+#endif
 
     return true;
 }
