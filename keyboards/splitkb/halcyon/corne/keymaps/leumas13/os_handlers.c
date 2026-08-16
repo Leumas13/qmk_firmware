@@ -83,12 +83,15 @@ bool process_record_os(uint16_t keycode, keyrecord_t *record) {
                 return false;
             case OS_WIN_MODE:
                 set_os_mode(OS_WIN);
+                layer_off(_GAME);
                 return false;
             case OS_MAC_MODE:
                 set_os_mode(OS_MAC);
+                layer_off(_GAME);
                 return false;
             case OS_LINUX_MODE:
                 set_os_mode(OS_LINUX);
+                layer_off(_GAME);
                 return false;
         }
 

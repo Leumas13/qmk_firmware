@@ -132,6 +132,20 @@ const uint8_t PROGMEM layer_pattern_leds[][MATRIX_ROWS][MATRIX_COLS] = {
                              _YLW,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW
     ),
 
+    [_GAME] = LAYOUT_split_3x6_3(
+        _BLU,  _BLU,  _RED,  _RED,  _ORG,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+        _BLU,  _RED,  _RED,  _ORG,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+        _RED,  _RED,  _ORG,  _YLW,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+                             _YLW,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW
+    ),
+
+    [_GNUM] = LAYOUT_split_3x6_3(
+        _BLU,  _BLU,  _RED,  _RED,  _ORG,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+        _BLU,  _RED,  _RED,  _ORG,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+        _RED,  _RED,  _ORG,  _YLW,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW,  _YLW,  _YLW,  _YLW,
+                             _YLW,  _YLW,  _YLW,      _YLW,  _YLW,  _YLW
+    ),
+
     [_NUM] = LAYOUT_split_3x6_3(
         _PRP,  _OFF,  _RED,  _RED,  _RED,  _PRP,      _OFF,  _PRP,  _PRP,  _PRP,  _OFF,  _OFF,
         _OFF,  _OFF,  _OFF,  _OFF,  _OFF,  _OFF,      _OFF,  _PRP,  _PRP,  _PRP,  _OFF,  _OFF,
@@ -147,7 +161,7 @@ const uint8_t PROGMEM layer_pattern_leds[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_CFG] = LAYOUT_split_3x6_3(
-        _OFF,  _WIN,  _MAC,  _LIN,  _OFF,  _OFF,      _OFF,  _GRN,  _GRN,  _GRN,  _OFF,  _OFF,
+        _YLW,  _WIN,  _MAC,  _LIN,  _OFF,  _OFF,      _OFF,  _GRN,  _GRN,  _GRN,  _OFF,  _OFF,
         _OFF,  _WHT,  _OFF,  _WHT,  _WHT,  _OFF,      _OFF,  _GRN,  _GRN,  _GRN,  _OFF,  _OFF,
         _OFF,  _OFF,  _OFF,  _WHT,  _WHT,  _OFF,      _OFF,  _OFF,  _YLW,  _YLW,  _OFF,  _OFF,
                               _OFF,  _OFF,  _OFF,      _RED,  _OFF,  _OFF
@@ -219,7 +233,11 @@ void update_rgb_indicators(void) {
         return;
     }
 
-    update_rgb_underglow();
+    if (layer == _GAME || layer == _GNUM) {
+        update_rgb_underglow_color(_YLW);
+    } else {
+        update_rgb_underglow();
+    }
 
     for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
         for (uint8_t col = 0; col < MATRIX_COLS; ++col) {

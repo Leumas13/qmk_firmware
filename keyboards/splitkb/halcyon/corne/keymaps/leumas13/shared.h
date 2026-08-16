@@ -3,6 +3,8 @@
 
 enum layers {
     _BASE = 0,
+    _GAME,
+    _GNUM,
     _NUM,
     _SYM,
     _CFG,
