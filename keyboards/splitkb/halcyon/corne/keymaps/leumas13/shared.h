@@ -59,7 +59,10 @@ enum custom_keycodes {
     M_BRACK,
     M_CURLY,
     M_VM,
-    M_HOST,
+    M_HOST1,
+    M_HOST2,
+    M_HOST3,
+    M_HOST4,
     KB_LOCK,
     EXT_SAFE_RANGE,
     MIN_MV

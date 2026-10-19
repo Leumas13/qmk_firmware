@@ -182,9 +182,9 @@ const uint8_t PROGMEM layer_pattern_leds[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_FUN] = LAYOUT_split_3x6_3(
-        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _GRN,  _YLW,
-        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _OFF,  _OFF,
-        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _OFF,  _OFF,
+        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _GRN,  _OFF,
+        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _YLW,  _YLW,
+        _OFF,  _OFF,  _RED,  _RED,  _RED,  _RED,      _OFF,  _OFF,  _MAG,  _OFF,  _YLW,  _YLW,
                               _OFF,  _OFF,  _OFF,      _OFF,  _OFF,  _OFF
     ),
 
